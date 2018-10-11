@@ -107,10 +107,6 @@ def make_dest(src, dst, filename):
 
 
 def transform(source, in_fmt, dest, out_fmt):
-    logger.info(
-        "Transform file %s format %s to file %s format %s",
-        source, in_fmt, dest, out_fmt,
-    )
     with io.open(source, 'r', encoding='utf-8') as in_fp:
         with io.open(dest, 'w', encoding='utf-8') as out_fp:
             file_transform(in_fp, in_fmt, out_fp, out_fmt)
@@ -140,6 +136,10 @@ def main():
             except OSError as exc:
                 if exc.errno != 17:
                     raise
+            logger.info(
+                "Transform file %s format %s to file %s format %s",
+                source, in_fmt, dest, out_fmt,
+            )
             try:
                 transform(source, ns.in_fmt, dest, ns.out_fmt)
             except BadFormat:
