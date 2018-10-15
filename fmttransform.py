@@ -82,7 +82,7 @@ def read_json(fp):
 
 
 def write_yaml(obj, fp):
-    return yaml.dump(obj, fp)
+    return yaml.dump(obj, fp, default_style='|', default_flow_style=False)
 
 
 def write_json(obj, fp):
@@ -102,8 +102,8 @@ writers = {
 
 
 def make_dest(src, dst, filename):
-    subdir = os.path.basename(filename.split(src)[-1])
-    return os.path.join(dst, subdir)
+    subdir = filename.split(src)[-1]
+    return os.path.join(dst, subdir.lstrip(os.path.sep))
 
 
 def transform(source, in_fmt, dest, out_fmt):
