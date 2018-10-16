@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''
 Transform Salt serialization formats.
 
@@ -39,15 +40,19 @@ parser.add_argument(
 )
 parser.add_argument(
     '--out-dir',
-    help='Directory to output files too',
+    help='Directory to output files too [default:%(default)s]',
     default='/tmp',
 )
 parser.add_argument(
     '--out-fmt',
-    help='Transform to format',
+    help='Transform to format [default:%(default)s]',
     default='json',
 )
-
+parser.add_argument(
+    '--out-ext',
+    help='Change file extension on transform [default:%(default)s]',
+    default='json',
+)
 
 class TransformException(Exception):
     '''
@@ -101,14 +106,18 @@ writers = {
 }
 
 
-def make_dest(src, dst, filename):
+def make_dest(src, dst, filename, ext=''):
     subdir = filename.split(src)[-1]
-    return os.path.join(dst, subdir.lstrip(os.path.sep))
+    out = os.path.join(dst, subdir.lstrip(os.path.sep))
+    if ext:
+        fname, old_ext = os.path.splitext(out)
+        return '{}.{}'.format(fname, ext)
+    return out
 
 
 def transform(source, in_fmt, dest, out_fmt):
-    with io.open(source, 'r', encoding='utf-8') as in_fp:
-        with io.open(dest, 'w', encoding='utf-8') as out_fp:
+    with io.open(source, 'rb') as in_fp:
+        with io.open(dest, 'wb') as out_fp:
             file_transform(in_fp, in_fmt, out_fp, out_fmt)
 
 
@@ -130,7 +139,7 @@ def main():
                 )
                 continue
             source = os.path.join(dirname, filename)
-            dest = make_dest(ns.in_dir, ns.out_dir, source)
+            dest = make_dest(ns.in_dir, ns.out_dir, source, ext=ns.out_ext)
             try:
                 os.makedirs(os.path.dirname(dest))
             except OSError as exc:
@@ -138,7 +147,7 @@ def main():
                     raise
             logger.info(
                 "Transform file %s format %s to file %s format %s",
-                source, in_fmt, dest, out_fmt,
+                source, ns.in_fmt, dest, ns.out_fmt,
             )
             try:
                 transform(source, ns.in_fmt, dest, ns.out_fmt)
