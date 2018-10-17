@@ -14,13 +14,11 @@ setup(
     author='SaltStack',
     author_email='dwozniak@saltstack.com',
     url='https://github.com/saltstack/transform-format',
-#    packages=['urlio'],
-#    install_requires=[
-#        'pysmb==1.1.13',
-#        'dnspython>=1.12.0',
-#        'requests>=2.0.0',
-#        'repoze.lru==0.6',
-#    ],
+    install_requires=[
+        'PyYaml',
+        'simplejson',
+    ],
+    scripts=['fmttransform.py'],
 #    tests_require=TestCmd.tests_require(),
 #    cmdclass = {'test': TestCmd},
 )
