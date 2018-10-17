@@ -5,17 +5,18 @@ Transform Salt serialization formats.
 Transform one serialization format to another.
 '''
 from __future__ import unicode_literals, print_function
+import argparse
+import fnmatch
 import io
+import json
+import logging
 import os
 import sys
-import logging
 import yaml
-import fnmatch
-import json
 
-import argparse
 
 logger = logging.getLogger(__name__)
+
 
 parser = argparse.ArgumentParser(
     description='Transform Salt serialization formats.',
@@ -49,10 +50,12 @@ parser.add_argument(
     default='json',
 )
 parser.add_argument(
-    '--out-ext',
-    help='Change file extension on transform [default:%(default)s]',
-    default='json',
+    '--no-out-ext',
+    help='Change file extension on transform',
+    action='store_false',
+    default=True,
 )
+
 
 class TransformException(Exception):
     '''
@@ -78,7 +81,7 @@ def read_yaml(fp):
     try:
         return yaml.load(fp)
     except bad_fmt_exceptions as exc:
-        logger.error("yaml error: %s", str(exc))
+        logger.debug("yaml error: %s", str(exc))
         raise BadFormat
 
 
@@ -126,10 +129,19 @@ def file_transform(in_fp, in_fmt, out_fp, out_fmt):
     writers[out_fmt](obj, out_fp)
 
 
+fmt_to_ext = {
+  'yaml': 'yml',
+  'json': 'json',
+}
+
+
 def main():
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
     ns = parser.parse_args()
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
     ns.in_dir = os.path.normpath(os.path.abspath(ns.in_dir))
+    ext = None
+    if ns.out_ext:
+        ext = fmt_to_ext[ns.out_fmt]
     for dirname, dirnames, filenames in os.walk(ns.in_dir):
         for filename in filenames:
             if not fnmatch.fnmatch(filename, ns.in_filter):
