@@ -1,4 +1,5 @@
 PyYaml
+mock
 simplejson
 pytest
 mock

@@ -8,11 +8,13 @@ from __future__ import unicode_literals, print_function
 import argparse
 import fnmatch
 import io
-import json
+import simplejson as json
 import logging
 import os
 import sys
 import yaml
+
+import six
 
 
 logger = logging.getLogger(__name__)
@@ -52,8 +54,8 @@ parser.add_argument(
 parser.add_argument(
     '--out-ext',
     help='Change file extension on transform',
-    action='store_true',
-    default=False,
+    action='store_false',
+    default=True,
 )
 
 
@@ -89,12 +91,15 @@ def read_json(fp):
     return json.load(fp)
 
 
-def write_yaml(obj, fp):
-    return yaml.dump(obj, fp, default_style='|', default_flow_style=False)
+def write_yaml(obj, fp, encoding='utf-8'):
+    yaml.safe_dump(
+        obj, fp, encoding=encoding, default_style='|', default_flow_style=False,
+    )
 
 
-def write_json(obj, fp):
-    return json.dump(obj, fp)
+def write_json(obj, fp, encoding='utf-8'):
+    sobj = json.dumps(obj, indent=2)
+    fp.write(sobj.encode(encoding))
 
 
 readers = {
@@ -151,7 +156,7 @@ def main():
                 )
                 continue
             source = os.path.join(dirname, filename)
-            dest = make_dest(ns.in_dir, ns.out_dir, source, ext=ns.out_ext)
+            dest = make_dest(ns.in_dir, ns.out_dir, source, ext=ext)
             try:
                 os.makedirs(os.path.dirname(dest))
             except OSError as exc:
