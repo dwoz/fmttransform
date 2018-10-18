@@ -22,6 +22,13 @@ logger = logging.getLogger(__name__)
 
 parser = argparse.ArgumentParser(
     description='Transform Salt serialization formats.',
+    epilog=(
+        'Example usage:\n\n'
+        '  fmttransform.py --in-filter=\'*.yml\' --out-dir=\'/my/out/dir\'\n\n'
+        '  fmttransform.py --in-fmt=json --in-dir=\'/my/in/dir\' '
+        '--out-fmt=yaml --out-dir=\'/my/out/dir\' --no-out-ext\n'
+    ),
+    formatter_class=argparse.RawTextHelpFormatter
 )
 parser.add_argument(
     '--in-dir',
@@ -52,8 +59,8 @@ parser.add_argument(
     default='json',
 )
 parser.add_argument(
-    '--out-ext',
-    help='Change file extension on transform',
+    '--no-out-ext',
+    help='Do not change file extension on transform',
     action='store_false',
     default=True,
 )
