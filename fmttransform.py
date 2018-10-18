@@ -147,10 +147,11 @@ fmt_to_ext = {
 
 def main():
     ns = parser.parse_args()
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
+    logging.basicConfig(level=logging.ERROR, format='%(asctime)s %(message)s')
     ns.in_dir = os.path.normpath(os.path.abspath(ns.in_dir))
-    ext = None
-    if ns.out_ext:
+    if ns.no_out_ext:
+        ext = None
+    else:
         ext = fmt_to_ext[ns.out_fmt]
     for dirname, dirnames, filenames in os.walk(ns.in_dir):
         for filename in filenames:
