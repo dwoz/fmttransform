@@ -11,7 +11,7 @@ Installation
 Installation can be done using this repositories git url
 
 ```
-pip install git+git@github.com:dwoz/fmttransform.git#egg=fmttransform
+pip install -e git+git@github.com:dwoz/fmttransform.git#egg=fmttransform
 ```
 
 This will give you the fmttransform command.
