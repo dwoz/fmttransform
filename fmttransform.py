@@ -14,8 +14,6 @@ import os
 import sys
 import yaml
 
-import six
-
 
 logger = logging.getLogger(__name__)
 
