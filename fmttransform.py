@@ -59,8 +59,8 @@ parser.add_argument(
 parser.add_argument(
     '--no-out-ext',
     help='Do not change file extension on transform',
-    action='store_false',
-    default=True,
+    action='store_true',
+    default=False,
 )
 
 

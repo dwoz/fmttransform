@@ -19,6 +19,4 @@ setup(
         'simplejson',
     ],
     scripts=['fmttransform.py'],
-#    tests_require=TestCmd.tests_require(),
-#    cmdclass = {'test': TestCmd},
 )
