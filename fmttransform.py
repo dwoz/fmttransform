@@ -131,8 +131,12 @@ def make_dest(src, dst, filename, ext=''):
 def transform(source, in_fmt, dest, out_fmt):
     with io.open(source, 'rb') as in_fp:
         with io.open(dest, 'wb') as out_fp:
-            file_transform(in_fp, in_fmt, out_fp, out_fmt)
-
+            try:
+                file_transform(in_fp, in_fmt, out_fp, out_fmt)
+            except BadFormat:
+                out_fp.close()
+                os.remove(dest)
+                raise
 
 def file_transform(in_fp, in_fmt, out_fp, out_fmt):
     obj = readers[in_fmt](in_fp)
